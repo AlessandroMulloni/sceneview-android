@@ -25,11 +25,10 @@ object GLBLoader {
      */
     suspend fun loadModel(
         context: Context,
-        lifecycle: Lifecycle,
         glbFileLocation: String
     ): Model? = context.useFileBufferNotNull(glbFileLocation) { buffer ->
         withContext(Dispatchers.Main) {
-            createModel(lifecycle, buffer)
+            createModel(buffer)
         }
     }
 
@@ -49,10 +48,10 @@ object GLBLoader {
         glbFileLocation: String,
         result: (Model?) -> Unit
     ) = lifecycle.coroutineScope.launchWhenCreated {
-        result(loadModel(context, lifecycle, glbFileLocation))
+        result(loadModel(context, glbFileLocation))
     }
 
-    fun createModel(lifecycle: Lifecycle? = null, buffer: Buffer): Model? =
+    fun createModel(buffer: Buffer): Model? =
         assetLoader.createAssetFromBinary(buffer)?.also { asset ->
             resourceLoader.loadResources(asset)
             //TODO: Used by Filament ModelViewer, see if it's usefull
@@ -60,10 +59,5 @@ object GLBLoader {
                 it.setScreenSpaceContactShadows(true)
             }
             asset.releaseSourceData()
-
-            lifecycle?.observe(onDestroy = {
-                // Prevent double destroy in case of manually destroyed
-                runCatching { asset.destroy() }
-            })
         }
 }

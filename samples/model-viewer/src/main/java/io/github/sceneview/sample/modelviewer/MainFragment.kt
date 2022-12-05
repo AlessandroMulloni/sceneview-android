@@ -60,7 +60,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             modelNode.loadModel(
                 context = requireContext(),
-                lifecycle = lifecycle,
                 glbFileLocation = "https://sceneview.github.io/assets/models/MaterialSuite.glb",
                 scaleToUnits = 1.0f,
                 centerOrigin = Position(x = 0.0f, y = 0.0f, z = 0.0f)

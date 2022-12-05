@@ -276,7 +276,6 @@ open class ModelNode : RenderableNode {
      */
     suspend fun loadModel(
         context: Context,
-        lifecycle: Lifecycle,
         glbFileLocation: String,
         autoAnimate: Boolean = true,
         scaleToUnits: Float? = null,
@@ -284,7 +283,7 @@ open class ModelNode : RenderableNode {
         onError: ((error: Exception) -> Unit)? = null
     ): Model? {
         return try {
-            GLBLoader.loadModel(context, lifecycle, glbFileLocation)?.also { model ->
+            GLBLoader.loadModel(context, glbFileLocation)?.also { model ->
                 withContext(Dispatchers.Main) {
                     setModel(model, autoAnimate, scaleToUnits, centerOrigin)
                     onModelLoaded(model)
@@ -336,7 +335,6 @@ open class ModelNode : RenderableNode {
             lifecycle.coroutineScope.launchWhenCreated {
                 loadModel(
                     context,
-                    lifecycle,
                     glbFileLocation,
                     autoAnimate,
                     scaleToUnits,
